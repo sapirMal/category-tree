@@ -1,0 +1,45 @@
+.Node {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-start;
+}
+.Node li {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: flex-start;
+}
+
+.Node ul {
+    list-style: none;
+}
+
+
+.Node .NoChild::before {
+    content: "• ";
+    color: black;
+}
+
+.Node .Close::before {
+    cursor: pointer;
+    content: "+ ";
+    color: black;
+    font-weight: 900;
+
+}
+
+.Node .Open::before {
+    cursor: pointer;
+    font-weight: 900;
+    content: "- ";
+    color: black;
+
+}
+
+.OperationsButton {
+    align-self: flex-start;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    margin: auto;
+    background-color: white;
+}
