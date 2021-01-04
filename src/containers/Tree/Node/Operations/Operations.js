@@ -12,13 +12,17 @@ class Operations extends Component {
     }
 
     rename = () => {
-        this.props.rename(this.state.rename, this.props.id);
-        this.setState({showRename: false, rename: ''});
+        if (this.state.rename.length > 0) {
+            this.props.rename(this.state.rename, this.props.id);
+            this.setState({showRename: false, rename: ''});
+        }
     }
 
     add = () => {
-        this.props.addChild(this.state.name);
-        this.setState({showAdd: false, name: ''});
+        if (this.state.name.length > 0) {
+            this.props.addChild(this.state.name);
+            this.setState({showAdd: false, name: ''});
+        }
     }
 
     iconAdd = () => {
@@ -29,15 +33,9 @@ class Operations extends Component {
         this.setState((prevState) => {return {showRename: !prevState.showRename}});
     }
 
-    renameKeyHandler = (event) => {
-        if (event.key === 'Enter' && this.state.rename.length > 0) {
-            this.rename();
-        }
-    }
-
-    addKeyHandler = (event) => {
-        if (event.key === 'Enter' && this.state.name.length > 0) {
-            this.add();
+    keyHandler = (event, f) => {
+        if (event.key === 'Enter') {
+            f();
         }
     }
 
@@ -49,7 +47,7 @@ class Operations extends Component {
                 autoFocus
                 value={this.state.rename}
                 onChange={(event) => this.setState({rename: event.target.value})}
-                onKeyPress={(event) => this.renameKeyHandler(event)}>
+                onKeyPress={(event) => this.keyHandler(event, this.rename)}>
             </input>
             <input
                 type="button"
@@ -66,7 +64,7 @@ class Operations extends Component {
                 autoFocus
                 value={this.state.name}
                 onChange={(event) => this.setState({name: event.target.value})}
-                onKeyPress={(event) => this.addKeyHandler(event)}></input>
+                onKeyPress={(event) => this.keyHandler(event, this.add)}></input>
             <input
                 type="button"
                 value="ADD"

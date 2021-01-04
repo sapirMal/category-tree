@@ -3,14 +3,12 @@
     flex-flow: row wrap;
     align-items: flex-start;
     font-family: 'Roboto Mono', monospace;
-
 }
 
 .Node li {
     display: flex;
     flex-flow: row wrap;
     align-items: flex-start;
-    
 }
 
 .Node ul {
@@ -23,20 +21,20 @@
     color: black;
 }
 
-.Node .Close::before {
+.Node .Close,
+.Node .Open {
     cursor: pointer;
-    content: "\2192  ";
+}
+
+.Node .Close::before {
+    content: "\279D  ";
     color: black;
     font-weight: 900;
-
 }
 
 .Node .Open::before {
-    cursor: pointer;
-    font-weight: 900;
-    content: "\21A6  ";
+    content: "\21FE  ";
     color: black;
-
 }
 
 .OperationsButton {

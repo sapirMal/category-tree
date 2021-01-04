@@ -8,7 +8,6 @@
 
 .Tree ul {
     list-style: none inside;
-    /* list-style-position: ; */
     padding: 0;
 }
 
@@ -31,7 +30,6 @@ input[type=text] {
     outline: none;
     border-bottom: 1px solid black;
     background-color: white;
-    /* margin: 5px; */
     font-family: 'Roboto Mono', monospace;
 }
 
@@ -43,7 +41,6 @@ input[type=button],
     border: 1px solid black;
     background-color: white;
     margin: 5px;
-    /* height: 1.5rem; */
     font-weight: 700;
     text-align: center;
     padding: 5px;
