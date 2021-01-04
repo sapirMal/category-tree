@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
+import axios from 'axios';
 import Node from './Node/Node';
 import style from './Tree.module.css';
+
 
 let counter = 0;
 
@@ -9,18 +11,43 @@ class Tree extends Component {
     state = {
         id: 'tree',
         children: [],
-        // collapse: true,
         lastChildName: '',
         size: 0
     }
 
+
+    componentDidMount() {
+        const urlGetTree = 'https://my-category-tree-default-rtdb.europe-west1.firebasedatabase.app/tree/children.json';
+        axios.get(urlGetTree)
+            .then(res => {
+                console.log(res);
+                if (res.data) {
+                    this.setState({children: res.data})
+                }
+            })
+            .catch(err => console.log(err));
+        const urlGetCounter = 'https://my-category-tree-default-rtdb.europe-west1.firebasedatabase.app/tree/counter.json';
+
+        axios.get(urlGetCounter)
+            .then(res => {
+                console.log(res);
+                if (res.data) {
+                    counter = res.data;
+                }
+            })
+            .catch(err => console.log(err));
+    }
+
+
+
     addChild = (name) => {
         const child = {
-            id: this.state.id + '/' + counter++,
+            id: this.state.id + '/' + this.state.size,
             name: name,
             children: [],
             collapse: false,
-            operations: false
+            operations: false,
+            counter: 0
         }
         this.setState((prevState) => {return {size: prevState.size + 1}});
         const updateChildren = this.state.children.concat(child);
@@ -45,8 +72,8 @@ class Tree extends Component {
                     // add child
                     else if (newChildren.length > 0) {
                         nodes[i].children = newChildren;
+                        nodes[i].counter++;
                         this.setState((prevState) => {return {size: prevState.size + 1}});
-
                     }
                     // delete child
                     else {
@@ -61,27 +88,43 @@ class Tree extends Component {
         }
     }
 
+    add = () => {
+        this.addChild(this.state.lastChildName);
+        this.setState({lastChildName: ''});
+    }
+
+    keyHandler = (event) => {
+        if (event.key === 'Enter' && this.state.lastChildName.length > 0) {
+            this.add();
+        }
+    }
+
     deleteNode = (id) => {
         let updateChildren = JSON.parse(JSON.stringify(this.state.children));
         this.findAndUpdateChildren(updateChildren, [], id);
         this.setState({children: updateChildren})
-        //TODO: delete in firebase and in parent
     }
-
-    filterChildren = () => this.state.children.filter(node => node.name.length > 0);
-
 
     rename = (name, id) => {
         let nodes = JSON.parse(JSON.stringify(this.state.children));
         this.findAndUpdateChildren(nodes, name, id);
         this.setState({children: nodes});
+    }
 
+    save = () => {
+        const url = 'https://my-category-tree-default-rtdb.europe-west1.firebasedatabase.app/tree/children.json';
+        const tree = JSON.stringify(this.state.children);
+        axios.put(url, tree)
+            .then(res => console.log(res))
+            .catch(err => console.log(err));
+
+        const urlSaveCounter = 'https://my-category-tree-default-rtdb.europe-west1.firebasedatabase.app/tree/counter.json';
+        // const counter = JSON.stringify(counter);
+        axios.put(urlSaveCounter, counter)
+            .then(res => console.log(res))
+            .catch(err => console.log(err));
     }
-    keyHandler = (event) => {
-        if (event.key === 'Enter' && this.state.lastChildName.length > 0) {
-            this.addChild(this.state.lastChildName);
-        }
-    }
+
     render() {
 
         let node = this.state.children.length ?
@@ -89,17 +132,16 @@ class Tree extends Component {
                 {this.state.children.map(node => {
                     return (
                         <li key={node.id}>
-                            {/* { console.log(node)} */}
                             <Node
                                 name={node.name}
                                 id={node.id}
                                 children={node.children}
-                                showOperations={node.showOperations}
+                                counter={node.counter}
+                                // showOperations={node.showOperations}
                                 delete={this.deleteNode}
                                 rename={this.rename}
-                                addChild={this.addChild}
                                 addChildren={this.addChildren}
-                                showOperationsHandler={this.showOperationsHandler}
+                            // showOperationsHandler={this.showOperationsHandler}
                             />
                         </li>)
                 })}
@@ -107,23 +149,25 @@ class Tree extends Component {
             null;
         return (
             <div className={style.Tree}>
-                <label>add node</label>
-                <input
-                    type="text"
-                    value={this.state.lastChildName}
-                    onChange={(event) => this.setState({lastChildName: event.target.value})}
-                    onKeyPress={(event) => this.keyHandler(event)}>
-
-                </input>
-                <input
-                    type="button"
-                    value="add"
-                    onClick={() => {
-                        this.addChild(this.state.lastChildName);
-                        this.setState({lastChildName: ''});
-                    }
-                    } disabled={!this.state.lastChildName.length > 0}></input>
-
+                <div className={style.Center}>
+                    <div>
+                        <button className={style.Button}
+                            onClick={this.save}>
+                            SAVE<br />TREE </button>
+                    </div>
+                    <input className={style.Input}
+                        type="text"
+                        placeholder='Create a top-level node'
+                        value={this.state.lastChildName}
+                        onChange={(event) => this.setState({lastChildName: event.target.value})}
+                        onKeyPress={(event) => this.keyHandler(event)}>
+                    </input>
+                    <input className={style.Input}
+                        type="button"
+                        value="ADD"
+                        onClick={this.add}
+                        disabled={!this.state.lastChildName.length > 0}></input>
+                </div>
                 <div>{node}</div>
 
             </div>

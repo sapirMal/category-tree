@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import Operations from './Operations/Operations';
 import style from './Node.module.css';
 
-let counter = 0;
 
 class Node extends Component {
 
@@ -15,14 +14,17 @@ class Node extends Component {
 
     addChild = (name) => {
         const child = {
-            id: this.props.id + '/' + counter++,
+            id: this.props.id + '/' + this.props.counter,
             name: name,
             children: [],
             collapse: true,
-            operations: false
+            operations: false,
+            counter: 0
         }
-        const updateChildren = this.props.children.concat(child);
+
+        const updateChildren = (!this.props.children) ? [child] : this.props.children.concat(child);
         this.props.addChildren(updateChildren, this.props.id);
+        this.setState({collapse: false});
     }
 
     deleteChildren = () => {
@@ -35,7 +37,7 @@ class Node extends Component {
     render() {
 
         const nodes =
-            (this.props.children.length > 0) ?
+            (this.props.children && this.props.children.length > 0) ?
                 (!this.state.collapse) ?
                     <div >
                         <span
@@ -52,6 +54,7 @@ class Node extends Component {
                                             name={node.name}
                                             id={node.id}
                                             children={node.children}
+                                            counter={node.counter}
                                             delete={this.props.delete}
                                             rename={this.props.rename}
                                             addChildren={this.props.addChildren}
@@ -74,7 +77,8 @@ class Node extends Component {
                         </span>
 
                     </div>
-                : <span className={style.NoChild}>{this.props.name}</span>;
+                :
+                <span className={style.NoChild}>{this.props.name}</span>;
 
 
         const operations =

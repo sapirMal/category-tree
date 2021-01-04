@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import style from './Operations.module.css';
 
 class Operations extends Component {
+
     state = {
         name: '',
         rename: '',
@@ -12,17 +13,69 @@ class Operations extends Component {
 
     rename = () => {
         this.props.rename(this.state.rename, this.props.id);
-        this.setState({showRename: false});
+        this.setState({showRename: false, rename: ''});
     }
 
     add = () => {
         this.props.addChild(this.state.name);
-        this.setState({showAdd: false});
+        this.setState({showAdd: false, name: ''});
     }
+
+    iconAdd = () => {
+        this.setState((prevState) => {return {showAdd: !prevState.showAdd}});
+    }
+
+    iconRename = () => {
+        this.setState((prevState) => {return {showRename: !prevState.showRename}});
+    }
+
+    renameKeyHandler = (event) => {
+        if (event.key === 'Enter' && this.state.rename.length > 0) {
+            this.rename();
+        }
+    }
+
+    addKeyHandler = (event) => {
+        if (event.key === 'Enter' && this.state.name.length > 0) {
+            this.add();
+        }
+    }
+
     render() {
+        const inputRename = <div className={style.Operation}>
+            <input
+                type="text"
+                placeholder='Enter a new name'
+                autoFocus
+                value={this.state.rename}
+                onChange={(event) => this.setState({rename: event.target.value})}
+                onKeyPress={(event) => this.renameKeyHandler(event)}>
+            </input>
+            <input
+                type="button"
+                value="RENAME"
+                onClick={this.rename}
+                disabled={!this.state.rename.length > 0}>
+            </input>
+        </div>;
+
+        const inputAdd = <div className={style.Operation}>
+            <input
+                type="text"
+                placeholder='Create a new node'
+                autoFocus
+                value={this.state.name}
+                onChange={(event) => this.setState({name: event.target.value})}
+                onKeyPress={(event) => this.addKeyHandler(event)}></input>
+            <input
+                type="button"
+                value="ADD"
+                onClick={this.add}
+                disabled={!this.state.name.length > 0}></input>
+        </div>;
+
         const icons = (<div className={style.Icons}>
-            <div
-                className={style.Icon}
+            <div className={style.Icon}
                 onClick={this.props.delete}>
                 <svg xmlns="http://www.w3.org/2000/svg"
                     xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -76,12 +129,9 @@ class Operations extends Component {
                     <g>
                     </g>
                 </svg>
-
             </div>
-
-            <div
-                className={style.Icon}
-                onClick={() => this.setState((prevState) => {return {showRename: !prevState.showRename}})}>
+            <div className={style.Icon}
+                onClick={this.iconRename}>
                 <svg xmlns="http://www.w3.org/2000/svg"
                     xmlnsXlink="http://www.w3.org/1999/xlink"
                     version="1.1"
@@ -101,8 +151,7 @@ class Operations extends Component {
                 </svg>
             </div>
             <div className={style.Icon}
-                onClick={() => this.setState((prevState) => {return {showAdd: !prevState.showAdd}})}>
-
+                onClick={this.iconAdd}>
                 <svg xmlns="http://www.w3.org/2000/svg"
                     xmlnsXlink="http://www.w3.org/1999/xlink"
                     version="1.1"
@@ -118,42 +167,14 @@ class Operations extends Component {
                     </g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>
                 </svg>
             </div>
-        </div>);
+        </div >);
 
-        const inputRename = this.state.showRename ? <div className={style.Operation}>
-            <label>rename: </label>
-            <input
-                type="text"
-                value={this.state.rename}
-                onChange={(event) => this.setState({rename: event.target.value})}>
-
-            </input>
-            <input
-                type="button"
-                value="rename"
-                onClick={this.rename}
-                disabled={!this.state.rename.length > 0}>
-            </input>
-
-        </div> : null;
-        const inputAdd = this.state.showAdd ? <div className={style.Operation}>
-
-            <label>add node: </label>
-            <input
-                type="text"
-                onChange={(event) => this.setState({name: event.target.value})}></input>
-            <input
-                type="button"
-                value="add"
-                onClick={this.add}
-                disabled={!this.state.name.length > 0}></input>
-        </div> : null;
-
-        return (<div className={style.Operations}>
-            {icons}
-            {inputRename}
-            {inputAdd}
-        </div>
+        return (
+            <div className={style.Operations}>
+                {icons}
+                {this.state.showRename ? inputRename : null}
+                {this.state.showAdd ? inputAdd : null}
+            </div>
 
         )
     }

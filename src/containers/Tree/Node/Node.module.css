@@ -2,11 +2,15 @@
     display: flex;
     flex-flow: row wrap;
     align-items: flex-start;
+    font-family: 'Roboto Mono', monospace;
+
 }
+
 .Node li {
     display: flex;
     flex-flow: row wrap;
     align-items: flex-start;
+    
 }
 
 .Node ul {
@@ -15,13 +19,13 @@
 
 
 .Node .NoChild::before {
-    content: "• ";
+    content: "\21E2  ";
     color: black;
 }
 
 .Node .Close::before {
     cursor: pointer;
-    content: "+ ";
+    content: "\2192  ";
     color: black;
     font-weight: 900;
 
@@ -30,7 +34,7 @@
 .Node .Open::before {
     cursor: pointer;
     font-weight: 900;
-    content: "- ";
+    content: "\21A6  ";
     color: black;
 
 }
