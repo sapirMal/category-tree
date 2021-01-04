@@ -11,8 +11,14 @@
     padding: 0;
 }
 
-.Tree ul>ul {
-    padding: 0;
+.Tree li {
+    margin: 5px;
+
+}
+
+.Tree li li {
+    position: relative;
+    left: -1rem;
 }
 
 .Tree .Input {

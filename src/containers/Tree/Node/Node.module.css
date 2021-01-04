@@ -5,22 +5,6 @@
     font-family: 'Roboto Mono', monospace;
 }
 
-.Node li {
-    display: flex;
-    flex-flow: row wrap;
-    align-items: flex-start;
-}
-
-.Node ul {
-    list-style: none;
-}
-
-
-.Node .NoChild::before {
-    content: "\21E2  ";
-    color: black;
-}
-
 .Node .Close,
 .Node .Open {
     cursor: pointer;
@@ -30,6 +14,11 @@
     content: "\279D  ";
     color: black;
     font-weight: 900;
+}
+
+.Node .NoChild::before {
+    content: "\21E2  ";
+    color: black;
 }
 
 .Node .Open::before {
