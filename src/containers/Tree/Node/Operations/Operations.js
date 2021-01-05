@@ -8,7 +8,6 @@ class Operations extends Component {
         rename: '',
         showRename: false,
         showAdd: false
-
     }
 
     rename = () => {
